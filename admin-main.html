@@ -1,0 +1,1812 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HugeRecruitment — Admin Panel</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --navy: #071428;
+        --navy-mid: #0c2044;
+        --navy-soft: #1a3a6b;
+        --gold: #c9a227;
+        --gold-lt: #e8c96a;
+        --gold-bg: #fdf6df;
+        --white: #ffffff;
+        --bg: #f6f4ef;
+        --line: #e4e1da;
+        --text: #1e293b;
+        --muted: #64748b;
+        --ph: #b0bac8;
+        --green: #16a34a;
+        --green-bg: #dcfce7;
+        --red: #dc2626;
+        --red-bg: #fee2e2;
+        --amber: #d97706;
+        --amber-bg: #fef3c7;
+        --blue: #2563eb;
+        --blue-bg: #dbeafe;
+      }
+      html,
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      .shell {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* ── SIDEBAR (same as dashboard) ─────────────────── */
+      .sidenav {
+        width: 220px;
+        flex-shrink: 0;
+        background: var(--navy);
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        z-index: 40;
+      }
+      .sidenav-logo {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 18px 22px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        text-decoration: none;
+      }
+      .sidenav-logo-mark {
+        width: 28px;
+        height: 28px;
+        border-radius: 5px;
+        background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .sidenav-logo-mark svg {
+        width: 15px;
+        height: 15px;
+      }
+      .sidenav-logo-name {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--white);
+        letter-spacing: 0.02em;
+      }
+      .sidenav-logo-name span {
+        color: var(--gold-lt);
+      }
+      .sidenav-section {
+        font-size: 9.5px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.2);
+        padding: 20px 22px 8px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 22px;
+        font-size: 13px;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.45);
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        transition:
+          color 0.15s,
+          background 0.15s;
+        border-left: 2px solid transparent;
+      }
+      .nav-item svg {
+        width: 15px;
+        height: 15px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.7;
+        flex-shrink: 0;
+      }
+      .nav-item:hover {
+        color: rgba(255, 255, 255, 0.75);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .nav-item.active {
+        color: var(--gold-lt);
+        font-weight: 500;
+        background: rgba(201, 162, 39, 0.08);
+        border-left-color: var(--gold);
+      }
+      .nav-item.active svg {
+        stroke: var(--gold-lt);
+      }
+      .nav-badge {
+        margin-left: auto;
+        font-size: 10px;
+        font-weight: 600;
+        background: var(--gold);
+        color: var(--navy);
+        border-radius: 10px;
+        padding: 1px 7px;
+        min-width: 20px;
+        text-align: center;
+      }
+      .nav-badge.red {
+        background: var(--red);
+        color: var(--white);
+      }
+      .sidenav-footer {
+        margin-top: auto;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 16px 22px;
+      }
+      .admin-chip {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .admin-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--navy-soft);
+        border: 1.5px solid rgba(201, 162, 39, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--gold-lt);
+      }
+      .admin-name {
+        font-size: 12px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.75);
+      }
+      .admin-role {
+        font-size: 10.5px;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.3);
+      }
+
+      /* ── MAIN ────────────────────────────────────────── */
+      .main {
+        margin-left: 220px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* ── TOP BAR ─────────────────────────────────────── */
+      .topbar {
+        height: 54px;
+        background: var(--white);
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        padding: 0 32px;
+        gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 30;
+      }
+      .topbar-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--navy);
+      }
+      .topbar-actions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .tb-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 32px;
+        padding: 0 14px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--white);
+        font-family: "DM Sans", sans-serif;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tb-btn svg {
+        width: 13px;
+        height: 13px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+      .tb-btn:hover {
+        border-color: #c5c0b8;
+        color: var(--text);
+      }
+      .tb-btn.primary {
+        background: var(--navy);
+        border-color: var(--navy);
+        color: var(--white);
+      }
+      .tb-btn.primary svg {
+        stroke: var(--gold-lt);
+      }
+      .tb-btn.primary:hover {
+        background: var(--navy-mid);
+      }
+      .notif-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+      }
+      .notif-btn svg {
+        width: 15px;
+        height: 15px;
+        stroke: var(--muted);
+        fill: none;
+        stroke-width: 1.8;
+      }
+      .notif-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--red);
+        border: 1.5px solid var(--white);
+        position: absolute;
+        top: 5px;
+        right: 5px;
+      }
+
+      /* ── CONTENT ─────────────────────────────────────── */
+      .content {
+        padding: 28px 32px 60px;
+        flex: 1;
+      }
+
+      /* ── SECTION TABS ────────────────────────────────── */
+      .section-tabs {
+        display: flex;
+        gap: 0;
+        margin-bottom: 22px;
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 4px;
+        width: fit-content;
+      }
+      .stab {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 18px;
+        border-radius: 5px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--muted);
+        cursor: pointer;
+        border: none;
+        background: none;
+        transition: all 0.15s;
+        font-family: "DM Sans", sans-serif;
+      }
+      .stab svg {
+        width: 13px;
+        height: 13px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.8;
+      }
+      .stab .stab-count {
+        font-size: 11px;
+        background: var(--line);
+        color: var(--muted);
+        border-radius: 10px;
+        padding: 1px 7px;
+      }
+      .stab:hover {
+        color: var(--text);
+      }
+      .stab.active {
+        background: var(--navy);
+        color: var(--white);
+      }
+      .stab.active .stab-count {
+        background: rgba(201, 162, 39, 0.3);
+        color: var(--gold-lt);
+      }
+
+      /* ── TOOLBAR ─────────────────────────────────────── */
+      .toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+      .search-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 200px;
+        max-width: 340px;
+      }
+      .search-wrap svg {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 14px;
+        height: 14px;
+        stroke: var(--ph);
+        fill: none;
+        stroke-width: 1.8;
+        pointer-events: none;
+      }
+      .search-input {
+        width: 100%;
+        height: 34px;
+        padding: 0 12px 0 34px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        color: var(--text);
+        background: var(--white);
+        outline: none;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .search-input::placeholder {
+        color: var(--ph);
+        font-weight: 300;
+      }
+      .search-input:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12);
+      }
+
+      .filter-select {
+        height: 34px;
+        padding: 0 28px 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 12.5px;
+        color: var(--muted);
+        background: var(--white);
+        outline: none;
+        cursor: pointer;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        transition: border-color 0.15s;
+      }
+      .filter-select:focus {
+        border-color: var(--gold);
+        outline: none;
+      }
+
+      .toolbar-right {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+      }
+
+      .export-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 34px;
+        padding: 0 14px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--white);
+        font-family: "DM Sans", sans-serif;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .export-btn svg {
+        width: 13px;
+        height: 13px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.8;
+      }
+      .export-btn:hover {
+        border-color: #c5c0b8;
+        color: var(--text);
+      }
+      .export-btn.pdf:hover {
+        border-color: #dc2626;
+        color: #dc2626;
+      }
+      .export-btn.xlsx:hover {
+        border-color: #16a34a;
+        color: #16a34a;
+      }
+
+      /* ── TABLE ───────────────────────────────────────── */
+      .table-wrap {
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+        animation: fadeUp 0.3s ease both;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead tr {
+        background: var(--bg);
+        border-bottom: 1px solid var(--line);
+      }
+      th {
+        padding: 10px 16px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-align: left;
+        white-space: nowrap;
+      }
+      th.sortable {
+        cursor: pointer;
+        user-select: none;
+      }
+      th.sortable:hover {
+        color: var(--text);
+      }
+      th svg {
+        width: 10px;
+        height: 10px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.5;
+        vertical-align: middle;
+        margin-left: 3px;
+      }
+
+      /* checkbox col */
+      th:first-child,
+      td:first-child {
+        width: 40px;
+        padding-left: 16px;
+      }
+
+      tbody tr {
+        border-bottom: 1px solid var(--line);
+        transition: background 0.12s;
+      }
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+      tbody tr:hover {
+        background: #fafaf8;
+      }
+      tbody tr.selected {
+        background: var(--gold-bg);
+      }
+
+      td {
+        padding: 12px 16px;
+        font-size: 13px;
+        font-weight: 400;
+        color: var(--text);
+        vertical-align: middle;
+      }
+
+      /* custom checkbox */
+      .cb {
+        width: 15px;
+        height: 15px;
+        border: 1.5px solid var(--line);
+        border-radius: 3px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.12s;
+        flex-shrink: 0;
+      }
+      .cb.checked {
+        background: var(--navy);
+        border-color: var(--navy);
+      }
+      .cb.checked::after {
+        content: "";
+        display: block;
+        width: 9px;
+        height: 5px;
+        border-left: 1.5px solid var(--gold-lt);
+        border-bottom: 1.5px solid var(--gold-lt);
+        transform: rotate(-45deg) translateY(-1px);
+      }
+
+      /* person cell */
+      .person-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .p-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--navy-soft);
+        flex-shrink: 0;
+      }
+      .p-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .p-meta {
+        font-size: 11px;
+        font-weight: 300;
+        color: var(--muted);
+        margin-top: 1px;
+      }
+
+      /* status badge */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        font-weight: 500;
+        padding: 3px 9px;
+        border-radius: 20px;
+        white-space: nowrap;
+      }
+      .badge::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: 0.7;
+      }
+      .badge.green {
+        background: var(--green-bg);
+        color: var(--green);
+      }
+      .badge.amber {
+        background: var(--amber-bg);
+        color: var(--amber);
+      }
+      .badge.navy {
+        background: rgba(7, 20, 40, 0.07);
+        color: var(--navy-soft);
+      }
+      .badge.red {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+      .badge.blue {
+        background: var(--blue-bg);
+        color: var(--blue);
+      }
+
+      /* progress bar for profile completeness */
+      .progress-cell {
+        min-width: 100px;
+      }
+      .prog-bar {
+        height: 4px;
+        background: var(--line);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 4px;
+      }
+      .prog-fill {
+        height: 100%;
+        border-radius: 2px;
+        background: var(--gold);
+      }
+      .prog-fill.full {
+        background: var(--green);
+      }
+      .prog-fill.low {
+        background: var(--red);
+      }
+      .prog-label {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      /* row actions */
+      .row-actions {
+        display: flex;
+        gap: 6px;
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+      tbody tr:hover .row-actions {
+        opacity: 1;
+      }
+      .row-btn {
+        width: 26px;
+        height: 26px;
+        border-radius: 5px;
+        border: 1px solid var(--line);
+        background: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.12s;
+      }
+      .row-btn svg {
+        width: 12px;
+        height: 12px;
+        stroke: var(--muted);
+        fill: none;
+        stroke-width: 1.8;
+      }
+      .row-btn:hover {
+        border-color: var(--gold);
+      }
+      .row-btn:hover svg {
+        stroke: var(--gold);
+      }
+      .row-btn.danger:hover {
+        border-color: var(--red);
+      }
+      .row-btn.danger:hover svg {
+        stroke: var(--red);
+      }
+
+      /* ── TABLE FOOTER ────────────────────────────────── */
+      .table-footer {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-top: 1px solid var(--line);
+        background: var(--bg);
+      }
+      .tf-info {
+        font-size: 12px;
+        font-weight: 300;
+        color: var(--muted);
+      }
+      .tf-info strong {
+        font-weight: 500;
+        color: var(--text);
+      }
+      .bulk-actions {
+        display: flex;
+        gap: 8px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s;
+      }
+      .bulk-actions.visible {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .bulk-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        height: 28px;
+        padding: 0 12px;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        background: var(--white);
+        font-family: "DM Sans", sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .bulk-btn svg {
+        width: 11px;
+        height: 11px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+      .bulk-btn:hover {
+        border-color: #c5c0b8;
+        color: var(--text);
+      }
+      .bulk-btn.danger:hover {
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .pagination {
+        margin-left: auto;
+        display: flex;
+        gap: 4px;
+      }
+      .pg-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 5px;
+        border: 1px solid var(--line);
+        background: var(--white);
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .pg-btn svg {
+        width: 11px;
+        height: 11px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.5;
+      }
+      .pg-btn:hover {
+        border-color: #c5c0b8;
+        color: var(--text);
+      }
+      .pg-btn.active {
+        background: var(--navy);
+        border-color: var(--navy);
+        color: var(--white);
+      }
+
+      /* ── EMPLOYER TABLE SPECIFICS ────────────────────── */
+      .employer-section {
+        display: none;
+      }
+      .employer-section.active {
+        display: block;
+      }
+      .candidate-section {
+        display: block;
+      }
+      .candidate-section.active {
+        display: block;
+      }
+
+      /* ── STAT STRIP ──────────────────────────────────── */
+      .stat-strip {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+      }
+      .stat-pill {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 14px;
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-size: 12.5px;
+        font-weight: 400;
+        color: var(--muted);
+      }
+      .stat-pill:hover {
+        border-color: #c5c0b8;
+        color: var(--text);
+      }
+      .stat-pill.active {
+        border-color: var(--navy);
+        background: var(--navy);
+        color: var(--white);
+      }
+      .stat-pill-count {
+        font-size: 11px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        padding: 1px 7px;
+      }
+      .stat-pill:not(.active) .stat-pill-count {
+        background: var(--line);
+        color: var(--text);
+      }
+
+      /* ── ANIMATION ───────────────────────────────────── */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .next-button-container{
+        display: flex;
+        justify-content: space-evenly;
+      }
+      .next-button {
+        
+        margin-top: 40px;
+        margin-bottom: 40px;
+        background-color: #071428;
+        color: gold;
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        text-decoration: none;
+
+      }
+
+      /* ── RESPONSIVE ──────────────────────────────────── */
+      @media (max-width: 780px) {
+        .sidenav {
+          display: none;
+        }
+        .main {
+          margin-left: 0;
+        }
+        .content {
+          padding: 16px;
+        }
+        table th:nth-child(4),
+        table td:nth-child(4),
+        table th:nth-child(5),
+        table td:nth-child(5) {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <!-- SIDEBAR -->
+      <nav class="sidenav">
+        <a class="sidenav-logo" href="#">
+          <div class="sidenav-logo-mark">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path
+                d="M3 17 Q3 7 12 7 Q21 7 21 17"
+                stroke="#071428"
+                stroke-width="2.2"
+                stroke-linecap="round"
+              />
+              <circle cx="3" cy="17" r="2" fill="#071428" />
+              <circle cx="21" cy="17" r="2" fill="#071428" />
+              <circle cx="12" cy="7" r="2" fill="#071428" />
+            </svg>
+          </div>
+          <span class="sidenav-logo-name">Huge<span>Recruitment</span></span>
+        </a>
+        <div class="sidenav-section">Overview</div>
+        <a class="nav-item" href="admin-dashboard.html">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+          </svg>
+          Dashboard
+        </a>
+        <a class="nav-item active" href="#">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            />
+          </svg>
+          Admin Panel
+        </a>
+        <div class="sidenav-section">People</div>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+          </svg>
+          Candidates <span class="nav-badge">247</span>
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16M3 21h18M9 7h1M9 11h1M9 15h1M14 7h1M14 11h1M14 15h1"
+            />
+          </svg>
+          Employers <span class="nav-badge">38</span>
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 8v4l3 3" />
+          </svg>
+          Pending Approvals <span class="nav-badge red">12</span>
+        </a>
+        <div class="sidenav-section">Operations</div>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            />
+          </svg>
+          Job Placements
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+          Timesheets
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v1m0 8v1m0-10V3m0 18v-1"
+            />
+          </svg>
+          Payroll
+        </a>
+        <div class="sidenav-section">System</div>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+            />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          Settings
+        </a>
+        <div class="sidenav-footer">
+          <div class="admin-chip">
+            <div class="admin-avatar">AR</div>
+            <div>
+              <div class="admin-name">Alex Reynolds</div>
+              <div class="admin-role">Super Admin</div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- MAIN -->
+      <div class="main">
+        <div class="topbar">
+          <div class="topbar-title">Admin Panel</div>
+          <div class="topbar-actions">
+            <div class="notif-btn">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"
+                />
+              </svg>
+              <div class="notif-dot"></div>
+            </div>
+            <button class="tb-btn" onclick="showTab('candidates')">
+              <svg viewBox="0 0 24 24">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+              </svg>
+              Add Candidate
+            </button>
+            <button class="tb-btn primary" onclick="showTab('employers')">
+              <svg viewBox="0 0 24 24">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Add Employer
+            </button>
+          </div>
+        </div>
+
+        <div class="content">
+          <!-- SECTION TABS -->
+          <div class="section-tabs">
+            <button
+              class="stab active"
+              id="tab-candidates"
+              onclick="showTab('candidates')"
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+              </svg>
+              Candidates
+              <span class="stab-count">247</span>
+            </button>
+            <button
+              class="stab"
+              id="tab-employers"
+              onclick="showTab('employers')"
+            >
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16M9 7h1M9 11h1M14 7h1M14 11h1"
+                />
+              </svg>
+              Employers
+              <span class="stab-count">38</span>
+            </button>
+          </div>
+
+          <!-- ════════════════════════════════
+           CANDIDATES SECTION
+      ════════════════════════════════ -->
+          <div id="candidates-section">
+            <!-- Status filter pills -->
+            <div class="stat-strip">
+              <div class="stat-pill active" onclick="filterPill(this)">
+                All <span class="stat-pill-count">247</span>
+              </div>
+              <div class="stat-pill" onclick="filterPill(this)">
+                Registered <span class="stat-pill-count">89</span>
+              </div>
+              <div class="stat-pill" onclick="filterPill(this)">
+                In Review <span class="stat-pill-count">62</span>
+              </div>
+              <div class="stat-pill" onclick="filterPill(this)">
+                Placed <span class="stat-pill-count">64</span>
+              </div>
+              <div class="stat-pill" onclick="filterPill(this)">
+                Docs Pending <span class="stat-pill-count">12</span>
+              </div>
+              <div class="stat-pill" onclick="filterPill(this)">
+                Inactive <span class="stat-pill-count">20</span>
+              </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+              <div class="search-wrap">
+                <svg viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="M21 21l-4.35-4.35" />
+                </svg>
+                <input
+                  class="search-input"
+                  type="text"
+                  placeholder="Search by name, city, role…"
+                />
+              </div>
+              <select class="filter-select">
+                <option value="">All sectors</option>
+                <option>Warehouse</option>
+                <option>Manufacturing</option>
+                <option>Production</option>
+                <option>Distribution</option>
+                <option>Automotive</option>
+              </select>
+              <select class="filter-select">
+                <option value="">All cities</option>
+                <option>Birmingham</option>
+                <option>Manchester</option>
+                <option>Leeds</option>
+                <option>Sheffield</option>
+                <option>Coventry</option>
+              </select>
+              <select class="filter-select">
+                <option value="">All shifts</option>
+                <option>Day</option>
+                <option>Evening</option>
+                <option>Night</option>
+              </select>
+              <div class="toolbar-right">
+                <button
+                  class="export-btn pdf"
+                  onclick="alert('Exporting PDF…')"
+                >
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                    />
+                    <polyline points="14 2 14 8 20 8" />
+                  </svg>
+                  PDF
+                </button>
+                <button
+                  class="export-btn xlsx"
+                  onclick="alert('Exporting Excel…')"
+                >
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                    />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="8" y1="13" x2="16" y2="13" />
+                    <line x1="8" y1="17" x2="16" y2="17" />
+                  </svg>
+                  Excel
+                </button>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      <div
+                        class="cb"
+                        id="select-all-c"
+                        onclick="toggleSelectAll('c')"
+                      ></div>
+                    </th>
+                    <th class="sortable">
+                      Candidate
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"
+                        />
+                      </svg>
+                    </th>
+                    <th class="sortable">Location</th>
+                    <th class="sortable">Role Sought</th>
+                    <th class="sortable">Shift</th>
+                    <th>Profile</th>
+                    <th class="sortable">RTW</th>
+                    <th class="sortable">Status</th>
+                    <th>Registered</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="candidates-tbody">
+                  <!-- rows injected by JS -->
+                </tbody>
+              </table>
+              <div class="table-footer">
+                <span class="tf-info"
+                  >Showing <strong>1–10</strong> of
+                  <strong>247</strong> candidates</span
+                >
+                <div class="bulk-actions" id="bulk-c">
+                  <button class="bulk-btn">
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"
+                      /></svg
+                    >Contact
+                  </button>
+                  <button class="bulk-btn">
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      /></svg
+                    >Approve
+                  </button>
+                  <button class="bulk-btn danger">
+                    <svg viewBox="0 0 24 24">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path
+                        d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"
+                      /></svg
+                    >Remove
+                  </button>
+                </div>
+                <div class="pagination">
+                  <button class="pg-btn">
+                    <svg viewBox="0 0 24 24">
+                      <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                  </button>
+                  <button class="pg-btn active">1</button>
+                  <button class="pg-btn">2</button>
+                  <button class="pg-btn">3</button>
+                  <button class="pg-btn">…</button>
+                  <button class="pg-btn">25</button>
+                  <button class="pg-btn">
+                    <svg viewBox="0 0 24 24">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════════════════════════
+           EMPLOYERS SECTION
+      ════════════════════════════════ -->
+          <div id="employers-section" style="display: none">
+            <div class="stat-strip">
+              <div class="stat-pill active" onclick="filterPill(this)">
+                All <span class="stat-pill-count">38</span>
+              </div>
+              <div class="stat-pill" onclick="filterPill(this)">
+                Active <span class="stat-pill-count">29</span>
+              </div>
+              <div class="stat-pill" onclick="filterPill(this)">
+                Pending <span class="stat-pill-count">5</span>
+              </div>
+              <div class="stat-pill" onclick="filterPill(this)">
+                Incomplete <span class="stat-pill-count">4</span>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <div class="search-wrap">
+                <svg viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="M21 21l-4.35-4.35" />
+                </svg>
+                <input
+                  class="search-input"
+                  type="text"
+                  placeholder="Search by company name, sector, city…"
+                />
+              </div>
+              <select class="filter-select">
+                <option value="">All sectors</option>
+                <option>Manufacturing</option>
+                <option>Warehouse & Logistics</option>
+                <option>Distribution</option>
+                <option>Automotive</option>
+                <option>Food & Beverage</option>
+              </select>
+              <select class="filter-select">
+                <option value="">Hire type</option>
+                <option>Temporary</option>
+                <option>Permanent</option>
+                <option>Temp-to-Perm</option>
+              </select>
+              <div class="toolbar-right">
+                <button
+                  class="export-btn pdf"
+                  onclick="alert('Exporting PDF…')"
+                >
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                    />
+                    <polyline points="14 2 14 8 20 8" />
+                  </svg>
+                  PDF
+                </button>
+                <button
+                  class="export-btn xlsx"
+                  onclick="alert('Exporting Excel…')"
+                >
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                    />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="8" y1="13" x2="16" y2="13" />
+                    <line x1="8" y1="17" x2="16" y2="17" />
+                  </svg>
+                  Excel
+                </button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      <div
+                        class="cb"
+                        id="select-all-e"
+                        onclick="toggleSelectAll('e')"
+                      ></div>
+                    </th>
+                    <th class="sortable">
+                      Company
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"
+                        />
+                      </svg>
+                    </th>
+                    <th>Sector</th>
+                    <th>Location</th>
+                    <th>Hire Type</th>
+                    <th>Active Roles</th>
+                    <th>Placements</th>
+                    <th>Contact</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="employers-tbody"></tbody>
+              </table>
+              <div class="table-footer">
+                <span class="tf-info"
+                  >Showing <strong>1–10</strong> of
+                  <strong>38</strong> employers</span
+                >
+                <div class="bulk-actions" id="bulk-e">
+                  <button class="bulk-btn">
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      /></svg
+                    >Approve
+                  </button>
+                  <button class="bulk-btn danger">
+                    <svg viewBox="0 0 24 24">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path
+                        d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"
+                      /></svg
+                    >Remove
+                  </button>
+                </div>
+                <div class="pagination">
+                  <button class="pg-btn">
+                    <svg viewBox="0 0 24 24">
+                      <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                  </button>
+                  <button class="pg-btn active">1</button>
+                  <button class="pg-btn">2</button>
+                  <button class="pg-btn">3</button>
+                  <button class="pg-btn">4</button>
+                  <button class="pg-btn">
+                    <svg viewBox="0 0 24 24">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="next-button-container">
+          <a href="./employer-profile.html" class="next-button">Previous Page - Employer Profile </a>
+          <a href="./admin-dashboard.html" class="next-button">Next Page - Admin Dashboard </a>
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <script>
+      // ── DATA ─────────────────────────────────────────
+      const candidates = [
+        {
+          initials: "JM",
+          name: "James Mitchell",
+          meta: "Registered 23 Mar",
+          location: "Manchester",
+          role: "Warehouse Operative",
+          shift: "Day",
+          profile: 45,
+          rtw: "Pending",
+          status: "amber",
+          statusLabel: "In Review",
+          date: "23 Mar 2026",
+        },
+        {
+          initials: "PR",
+          name: "Priya Raman",
+          meta: "Registered 20 Mar",
+          location: "Birmingham",
+          role: "Production Operative",
+          shift: "Evening",
+          profile: 100,
+          rtw: "Verified",
+          status: "green",
+          statusLabel: "Placed",
+          date: "20 Mar 2026",
+        },
+        {
+          initials: "TO",
+          name: "Tom O'Brien",
+          meta: "Registered 19 Mar",
+          location: "Leeds",
+          role: "Distribution Driver",
+          shift: "Day",
+          profile: 80,
+          rtw: "Verified",
+          status: "navy",
+          statusLabel: "Registered",
+          date: "19 Mar 2026",
+        },
+        {
+          initials: "AK",
+          name: "Aisha Khan",
+          meta: "Registered 18 Mar",
+          location: "Coventry",
+          role: "Machine Operator",
+          shift: "Night",
+          profile: 65,
+          rtw: "Pending",
+          status: "amber",
+          statusLabel: "In Review",
+          date: "18 Mar 2026",
+        },
+        {
+          initials: "SW",
+          name: "Sam Walker",
+          meta: "Registered 15 Mar",
+          location: "Sheffield",
+          role: "Forklift Driver",
+          shift: "Day",
+          profile: 100,
+          rtw: "Verified",
+          status: "green",
+          statusLabel: "Placed",
+          date: "15 Mar 2026",
+        },
+        {
+          initials: "LB",
+          name: "Lucy Barnes",
+          meta: "Registered 14 Mar",
+          location: "Nottingham",
+          role: "Quality Control",
+          shift: "Day",
+          profile: 90,
+          rtw: "Verified",
+          status: "green",
+          statusLabel: "Placed",
+          date: "14 Mar 2026",
+        },
+        {
+          initials: "RC",
+          name: "Raj Chaudhary",
+          meta: "Registered 12 Mar",
+          location: "Leicester",
+          role: "Warehouse Operative",
+          shift: "Night",
+          profile: 30,
+          rtw: "Missing",
+          status: "red",
+          statusLabel: "Docs Pending",
+          date: "12 Mar 2026",
+        },
+        {
+          initials: "FO",
+          name: "Fiona O'Reilly",
+          meta: "Registered 10 Mar",
+          location: "Liverpool",
+          role: "Team Leader",
+          shift: "Day",
+          profile: 75,
+          rtw: "Verified",
+          status: "navy",
+          statusLabel: "Registered",
+          date: "10 Mar 2026",
+        },
+        {
+          initials: "DM",
+          name: "David Mensah",
+          meta: "Registered 8 Mar",
+          location: "Bristol",
+          role: "HGV Driver",
+          shift: "Day",
+          profile: 95,
+          rtw: "Verified",
+          status: "green",
+          statusLabel: "Placed",
+          date: "8 Mar 2026",
+        },
+        {
+          initials: "KP",
+          name: "Kiran Patel",
+          meta: "Registered 5 Mar",
+          location: "Birmingham",
+          role: "Production Operative",
+          shift: "Evening",
+          profile: 20,
+          rtw: "Missing",
+          status: "red",
+          statusLabel: "Docs Pending",
+          date: "5 Mar 2026",
+        },
+      ];
+
+      const employers = [
+        {
+          initials: "AL",
+          name: "Apex Logistics Ltd",
+          bg: "#e0f2fe",
+          fg: "#0369a1",
+          sector: "Distribution",
+          location: "Manchester",
+          hire: "Temp-to-Perm",
+          roles: 12,
+          placements: 34,
+          contact: "Sarah Cole",
+          status: "green",
+          statusLabel: "Active",
+        },
+        {
+          initials: "BM",
+          name: "BrightMake Ltd",
+          bg: "#fef3c7",
+          fg: "#92400e",
+          sector: "Manufacturing",
+          location: "Birmingham",
+          hire: "Temporary",
+          roles: 4,
+          placements: 18,
+          contact: "James Howell",
+          status: "green",
+          statusLabel: "Active",
+        },
+        {
+          initials: "NF",
+          name: "NorthFill Foods",
+          bg: "#fce7f3",
+          fg: "#9d174d",
+          sector: "Food & Beverage",
+          location: "Leeds",
+          hire: "Temporary",
+          roles: 6,
+          placements: 22,
+          contact: "Emma Sharpe",
+          status: "amber",
+          statusLabel: "Pending",
+        },
+        {
+          initials: "VP",
+          name: "VeriPart Automotive",
+          bg: "#d1fae5",
+          fg: "#065f46",
+          sector: "Automotive",
+          location: "Coventry",
+          hire: "Permanent",
+          roles: 9,
+          placements: 41,
+          contact: "Ryan Tomlinson",
+          status: "green",
+          statusLabel: "Active",
+        },
+        {
+          initials: "CS",
+          name: "ColdStore UK Ltd",
+          bg: "#ede9fe",
+          fg: "#5b21b6",
+          sector: "Warehouse & Logistics",
+          location: "Sheffield",
+          hire: "Temporary",
+          roles: 0,
+          placements: 0,
+          contact: "Diane Marsh",
+          status: "red",
+          statusLabel: "Incomplete",
+        },
+        {
+          initials: "GT",
+          name: "GreenTrack Distribution",
+          bg: "#d1fae5",
+          fg: "#065f46",
+          sector: "Distribution",
+          location: "Nottingham",
+          hire: "Temporary",
+          roles: 7,
+          placements: 15,
+          contact: "Ian Fletcher",
+          status: "green",
+          statusLabel: "Active",
+        },
+        {
+          initials: "MP",
+          name: "MidlandsPack Ltd",
+          bg: "#fef3c7",
+          fg: "#92400e",
+          sector: "Manufacturing",
+          location: "Leicester",
+          hire: "Temp-to-Perm",
+          roles: 3,
+          placements: 9,
+          contact: "Carol Bryant",
+          status: "green",
+          statusLabel: "Active",
+        },
+        {
+          initials: "RB",
+          name: "RapidBuild Contracting",
+          bg: "#fee2e2",
+          fg: "#991b1b",
+          sector: "Construction",
+          location: "Bristol",
+          hire: "Contract",
+          roles: 5,
+          placements: 12,
+          contact: "Mark Webb",
+          status: "amber",
+          statusLabel: "Pending",
+        },
+      ];
+
+      // ── RENDER ────────────────────────────────────────
+      function renderCandidates() {
+        const tbody = document.getElementById("candidates-tbody");
+        tbody.innerHTML = candidates
+          .map(
+            (c, i) => `
+    <tr id="crow-${i}">
+      <td><div class="cb" onclick="toggleRow(this,'crow-${i}','bulk-c')"></div></td>
+      <td>
+        <div class="person-cell">
+          <div class="p-avatar">${c.initials}</div>
+          <div>
+            <div class="p-name">${c.name}</div>
+            <div class="p-meta">${c.meta}</div>
+          </div>
+        </div>
+      </td>
+      <td>${c.location}</td>
+      <td>${c.role}</td>
+      <td>${c.shift}</td>
+      <td class="progress-cell">
+        <div class="prog-label">${c.profile}%</div>
+        <div class="prog-bar"><div class="prog-fill ${c.profile === 100 ? "full" : c.profile < 40 ? "low" : ""}" style="width:${c.profile}%"></div></div>
+      </td>
+      <td><span class="badge ${c.rtw === "Verified" ? "green" : c.rtw === "Missing" ? "red" : "amber"}">${c.rtw}</span></td>
+      <td><span class="badge ${c.status}">${c.statusLabel}</span></td>
+      <td style="color:var(--muted);font-size:12px;font-weight:300;">${c.date}</td>
+      <td>
+        <div class="row-actions">
+          <div class="row-btn" title="View profile"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="row-btn" title="Edit"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+          <div class="row-btn" title="Message"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+          <div class="row-btn danger" title="Remove"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></div>
+        </div>
+      </td>
+    </tr>
+  `,
+          )
+          .join("");
+      }
+
+      function renderEmployers() {
+        const tbody = document.getElementById("employers-tbody");
+        tbody.innerHTML = employers
+          .map(
+            (e, i) => `
+    <tr id="erow-${i}">
+      <td><div class="cb" onclick="toggleRow(this,'erow-${i}','bulk-e')"></div></td>
+      <td>
+        <div class="person-cell">
+          <div class="p-avatar" style="background:${e.bg};color:${e.fg};border-color:${e.bg}">${e.initials}</div>
+          <div>
+            <div class="p-name">${e.name}</div>
+            <div class="p-meta">Reg. No. on file</div>
+          </div>
+        </div>
+      </td>
+      <td style="font-size:12.5px;color:var(--muted)">${e.sector}</td>
+      <td style="font-size:12.5px;color:var(--muted)">${e.location}</td>
+      <td style="font-size:12.5px">${e.hire}</td>
+      <td style="font-weight:600;color:var(--navy)">${e.roles}</td>
+      <td style="font-weight:600;color:var(--navy)">${e.placements}</td>
+      <td>
+        <div class="p-name" style="font-size:12.5px">${e.contact}</div>
+        <div class="p-meta">Primary contact</div>
+      </td>
+      <td><span class="badge ${e.status}">${e.statusLabel}</span></td>
+      <td>
+        <div class="row-actions">
+          <div class="row-btn" title="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="row-btn" title="Edit"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+          <div class="row-btn" title="Roles"><svg viewBox="0 0 24 24"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
+          <div class="row-btn danger" title="Remove"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></div>
+        </div>
+      </td>
+    </tr>
+  `,
+          )
+          .join("");
+      }
+
+      // ── TABS ──────────────────────────────────────────
+      function showTab(tab) {
+        document.getElementById("candidates-section").style.display =
+          tab === "candidates" ? "block" : "none";
+        document.getElementById("employers-section").style.display =
+          tab === "employers" ? "block" : "none";
+        document
+          .getElementById("tab-candidates")
+          .classList.toggle("active", tab === "candidates");
+        document
+          .getElementById("tab-employers")
+          .classList.toggle("active", tab === "employers");
+      }
+
+      // ── CHECKBOXES ────────────────────────────────────
+      function toggleRow(cb, rowId, bulkId) {
+        cb.classList.toggle("checked");
+        document.getElementById(rowId).classList.toggle("selected");
+        const anyChecked =
+          document.querySelectorAll(
+            `#${rowId.replace(/\d+/, "").replace(/-$/, "")} .cb.checked`,
+          ).length > 0;
+        document
+          .getElementById(bulkId)
+          .classList.toggle(
+            "visible",
+            document.querySelectorAll(".cb.checked").length > 0,
+          );
+      }
+
+      function toggleSelectAll(prefix) {
+        const master = document.getElementById(`select-all-${prefix}`);
+        master.classList.toggle("checked");
+        const isChecked = master.classList.contains("checked");
+        const rows = prefix === "c" ? candidates.length : employers.length;
+        for (let i = 0; i < rows; i++) {
+          const row = document.getElementById(`${prefix}row-${i}`);
+          const cb = row?.querySelector(".cb");
+          if (cb) {
+            isChecked
+              ? cb.classList.add("checked")
+              : cb.classList.remove("checked");
+          }
+          if (row) {
+            isChecked
+              ? row.classList.add("selected")
+              : row.classList.remove("selected");
+          }
+        }
+        document
+          .getElementById(`bulk-${prefix}`)
+          .classList.toggle("visible", isChecked);
+      }
+
+      // ── FILTER PILLS ──────────────────────────────────
+      function filterPill(el) {
+        el.closest(".stat-strip")
+          .querySelectorAll(".stat-pill")
+          .forEach((p) => p.classList.remove("active"));
+        el.classList.add("active");
+      }
+
+      // ── INIT ──────────────────────────────────────────
+      renderCandidates();
+      renderEmployers();
+    </script>
+  </body>
+</html>
